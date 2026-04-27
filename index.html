@@ -1,19 +1,4 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-							<style>
-								body {
-									background-color: white; /* Ensure the iframe has a white background */
-								}
-
-								
-							</style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -29,10 +14,9 @@
   @keyframes fadeIn  { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeInFast { from { opacity:0; } to { opacity:1; } }
   @keyframes spin    { to { transform:rotate(360deg); } }
-  @keyframes typewriter { from { width:0; } to { width:100%; } }
-  .fade-in  { animation: fadeIn 0.35s ease forwards; }
+  .fade-in   { animation: fadeIn 0.35s ease forwards; }
   .fade-fast { animation: fadeInFast 0.2s ease forwards; }
-  .spin     { animation: spin 1s linear infinite; }
+  .spin      { animation: spin 1s linear infinite; }
   .typing-cursor::after { content:'▋'; animation: fadeInFast 0.8s ease infinite alternate; }
 </style>
 </head>
@@ -42,7 +26,7 @@
 
 const { useState, useEffect, useRef } = React;
 
-// ── PATTERN DATA ──────────────────────────────────────────────────────────────
+// ── PATTERN DATA (Audited & Corrected) ───────────────────────────────────────
 
 const PATTERNS = [
   {
@@ -50,17 +34,32 @@ const PATTERNS = [
     limbs:['all_four'], postural:['all_four'],
     reflexThoracic:'normal_increased', reflexPelvic:'normal_increased',
     umn:{ thoracic:'UMN', pelvic:'UMN' },
-    explanation:'UMN signs in all four limbs. Both thoracic AND pelvic reflexes are normal-to-increased, so the lesion must be cranial to the cervical intumescence (C6–T2).',
+    explanation:'UMN signs in all four limbs. Both thoracic AND pelvic reflexes are normal-to-increased, placing the lesion cranial to the cervical intumescence (C6–T2). Neck pain and restricted cervical range of motion are common clinical features that help distinguish this from intracranial disease.',
     review: {
-      localization: 'The findings point to a lesion between C1 and C5 — the region of the spinal cord cranial to the cervical intumescence. Because this segment sits upstream of both intumescences, it disrupts descending motor pathways to all four limbs without directly damaging any motor neuron cell bodies.',
-      umnLmn: 'All four limbs show Upper Motor Neuron (UMN) signs. The descending corticospinal and rubrospinal tracts, which normally inhibit reflex arcs, are interrupted. With that inhibition removed, the local reflex arcs become hyperactive — hence normal-to-increased reflexes and spastic muscle tone in every limb. No Lower Motor Neuron (LMN) cell bodies are damaged, so there is no muscle atrophy at this stage.',
+      localization: `The findings point to a lesion between C1 and C5 — the region of the spinal cord cranial to the cervical intumescence. Because this segment sits upstream of both intumescences, it disrupts descending motor pathways to all four limbs without directly damaging any motor neuron cell bodies.
+
+Key clinical pointer: neck pain and reduced cervical range of motion are common with C1–C5 lesions. Their presence helps distinguish this from intracranial disease, which would also produce tetraparesis but is typically accompanied by altered mentation, cranial nerve deficits, or seizures rather than neck pain.`,
+      umnLmn: `All four limbs show Upper Motor Neuron (UMN) signs. The descending corticospinal and rubrospinal tracts, which normally exert inhibitory control over local reflex arcs, are interrupted above both intumescences. With that inhibition removed, the reflex arcs become disinhibited — producing normal-to-increased reflexes and spastic muscle tone in every limb.
+
+Importantly, no Lower Motor Neuron (LMN) cell bodies are damaged at this level. This means there is no neurogenic muscle atrophy in the early phase, and muscle bulk is preserved. Atrophy that does develop over time is disuse atrophy, which is more gradual and affects all muscle groups equally — unlike the focal, rapid atrophy seen with LMN lesions.`,
       differentials: [
-        { name:'Intervertebral Disc Disease (IVDD) — Hansen Type I or II', reason:'The most common cause of acute-to-subacute cervical myelopathy in chondrodystrophic breeds. Disc extrusion or protrusion at C2–C5 compresses the cord.' },
-        { name:'Atlantoaxial Instability / Subluxation', reason:'Especially in toy breeds. Instability at C1–C2 causes progressive or acute UMN tetraparesis, often with neck pain and reluctance to move the head.' },
-        { name:'Cervical Spondylomyelopathy (Wobbler Syndrome)', reason:'Large and giant breeds (Dobermans, Great Danes). Chronic, progressive UMN signs in all four limbs due to spinal cord compression at C3–C5 disc spaces.' },
+        {
+          name: 'Intervertebral Disc Disease (IVDD) — Hansen Type I or II',
+          reason: 'The most common cause of acute-to-subacute cervical myelopathy, particularly in chondrodystrophic breeds (Dachshund, Beagle, French Bulldog). Disc extrusion or protrusion at C2–C5 compresses the cord and typically presents with neck pain and varying degrees of UMN tetraparesis.'
+        },
+        {
+          name: 'Atlantoaxial (C1–C2) Instability or Subluxation',
+          reason: 'Particularly common in toy and small breeds (Chihuahua, Yorkshire Terrier, Pomeranian). Instability at the C1–C2 articulation — often due to absent or hypoplastic dens — causes progressive or acute UMN tetraparesis, neck pain, and reluctance to lower the head. Diagnosis is confirmed on lateral cervical radiographs or CT.'
+        },
+        {
+          name: 'Cervical Spondylomyelopathy (Wobbler Syndrome)',
+          reason: 'Affects large and giant breeds, most commonly Doberman Pinschers (disc-associated, C3–C7) and Great Danes (osseous-associated, C3–C7). Chronic, progressive UMN signs in all four limbs due to spinal cord compression; pelvic limbs are typically more severely affected than thoracic limbs.'
+        },
       ],
-      pearl: 'A useful rule: if all four limb reflexes are normal-to-increased, your lesion is CRANIAL to C6. The cervical intumescence starts at C6 — once you reach it, the thoracic limb reflexes drop.',
-      workup: 'MRI of the cervical spine is the gold standard. Survey radiographs may reveal disc calcification, subluxation, or vertebral malformation. CSF analysis helps characterize inflammatory vs. compressive disease.',
+      pearl: `Rule of thumb: if all four limb reflexes are normal-to-increased AND the animal has neck pain, your lesion is between C1 and C5.
+
+The cervical intumescence begins at C6 — once you reach it, the thoracic limb reflexes drop (LMN). No neck pain + UMN tetraparesis should also prompt you to rule out intracranial disease with a thorough cranial nerve exam and assessment of mentation.`,
+      workup: `MRI of the cervical spine is the gold standard and allows assessment of cord signal change (myelomalacia), disc material, and soft tissue structures. Survey cervical radiographs may reveal disc calcification, atlantoaxial subluxation, or vertebral malformation and are a reasonable first step. CSF analysis (collected at the cisterna magna) helps characterize inflammatory vs. compressive disease. For atlantoaxial instability, CT with 3D reconstruction provides the best detail of the dens and C1–C2 articulation.`,
     }
   },
   {
@@ -68,17 +67,48 @@ const PATTERNS = [
     limbs:['all_four','both_front'], postural:['all_four','front_only'],
     reflexThoracic:'decreased', reflexPelvic:'normal_increased',
     umn:{ thoracic:'LMN', pelvic:'UMN' },
-    explanation:'LMN signs in the thoracic limbs + UMN signs in the pelvic limbs = lesion within the cervical intumescence (C6–T2). Think: brachial plexus origin.',
+    explanation:'LMN signs in the thoracic limbs + UMN signs in the pelvic limbs = lesion within the cervical intumescence (C6–T2). The motor neuron cell bodies for the brachial plexus originate here, so damage produces flaccid thoracic limb deficits alongside spastic pelvic limb deficits.',
     review: {
-      localization: 'The split picture — LMN in front, UMN in back — is the hallmark of the cervical intumescence (C6–T2). This is where the motor neuron cell bodies for the brachial plexus live. A lesion here simultaneously destroys those LMN cell bodies (causing flaccid thoracic limb signs) while also interrupting the descending UMN tracts to the pelvic limbs (causing spastic pelvic limb signs).',
-      umnLmn: 'Thoracic limbs show LMN signs: decreased reflexes, flaccid tone, and neurogenic muscle atrophy developing over days to weeks — because the motor neurons themselves are damaged. Pelvic limbs show UMN signs: normal-to-increased reflexes and spastic tone — because the descending tracts are interrupted but the pelvic intumescence motor neurons are intact.',
+      localization: `The split picture — LMN in the thoracic limbs, UMN in the pelvic limbs — is the defining hallmark of a cervical intumescence (C6–T2) lesion. This is where the motor neuron cell bodies for the brachial plexus originate (C6–T2 ventral horn).
+
+A lesion here does two things simultaneously:
+• It destroys or damages the LMN cell bodies supplying the thoracic limbs → flaccid paresis, decreased reflexes, rapid neurogenic atrophy
+• It interrupts the descending UMN tracts passing through to the pelvic limbs → spastic paresis, normal-to-increased reflexes, preserved muscle mass
+
+The severity of the thoracic limb signs relative to the pelvic limb signs can help lateralize and localize within the intumescence.`,
+      umnLmn: `Thoracic limbs show LMN signs because the motor neurons themselves are damaged:
+• Decreased or absent biceps, triceps, and withdrawal reflexes
+• Flaccid muscle tone
+• Rapid neurogenic muscle atrophy (visible within 7–10 days)
+• The specific muscles affected depend on which nerve roots are involved (C6–C8 → biceps/flexors; C7–T1 → triceps/extensors)
+
+Pelvic limbs show UMN signs because the descending tracts are interrupted but the lumbar intumescence motor neurons are intact:
+• Normal-to-increased patellar reflex
+• Spastic tone
+• Preserved muscle mass (initially)
+• Delayed or absent postural reactions`,
       differentials: [
-        { name:'IVDD (C6–T2 region)', reason:'Disc extrusion at C6–C7 or C7–T1 is a classic cause, particularly in large breeds. Can present acutely with severe thoracic limb LMN signs.' },
-        { name:'Brachial Plexus Avulsion', reason:'Traumatic injury pulling the nerve roots from C6–T2. Results in unilateral LMN monoparesis of one thoracic limb, often with Horner syndrome.' },
-        { name:'Nerve Sheath Tumor (C6–T2 roots)', reason:'Slow, progressive, often painful monoparesis or biparesis of a thoracic limb. May initially mimic orthopaedic disease.' },
+        {
+          name: 'IVDD at C6–C7 or C7–T1',
+          reason: 'Disc extrusion at the caudal cervical intumescence is a classic cause, particularly in large breeds (Labrador Retriever, German Shepherd). Can present acutely with severe thoracic limb LMN signs and pelvic limb UMN signs. MRI is diagnostic.'
+        },
+        {
+          name: 'Nerve Sheath Tumor (involving C6–T2 roots bilaterally)',
+          reason: 'Slow, progressive, often asymmetric paresis affecting one or both thoracic limbs. Usually painful. May initially mimic orthopaedic disease. Bilateral involvement at the intumescence level is less common but possible with infiltrative tumors.'
+        },
+        {
+          name: 'Cervical Spondylomyelopathy (caudal cervical, C6–T2)',
+          reason: 'In Dobermans, compression most commonly occurs at C5–C6 and C6–C7. When severe, it can produce LMN thoracic limb signs alongside UMN pelvic limb signs, mimicking a true intumescence lesion.'
+        },
       ],
-      pearl: 'Spot the cervical intumescence pattern by asking: "Which end has LMN?" If it\'s the FRONT end, you\'re at C6–T2. If it\'s the BACK end, you\'re at L4–S3.',
-      workup: 'MRI of the caudal cervical spine (C5–T2) is essential. Electromyography (EMG) can confirm LMN denervation in thoracic limb muscles and help lateralize the lesion.',
+      pearl: `Spot the cervical intumescence by asking: "Which end has the LMN signs?"
+
+• LMN in the FRONT end (thoracic limbs) → C6–T2
+• LMN in the BACK end (pelvic limbs) → L4–S3
+• LMN in ALL four limbs → think outside the spine (generalized neuromuscular disease)
+
+A useful memory aid: the two intumescences are the "bumps" in the spinal cord where the limb plexuses originate. LMN signs always point to the intumescence serving those limbs.`,
+      workup: `MRI of the caudal cervical spine (C5–T2) is the imaging of choice. Electromyography (EMG) can confirm LMN denervation in specific thoracic limb muscle groups and help lateralize the lesion — fibrillation potentials and positive sharp waves appear 5–7 days after LMN injury. Nerve conduction studies (NCS) assess motor nerve integrity. CSF analysis to evaluate for inflammatory myelopathy.`,
     }
   },
   {
@@ -86,17 +116,45 @@ const PATTERNS = [
     limbs:['both_back'], postural:['back_only'],
     reflexThoracic:'normal_increased', reflexPelvic:'normal_increased',
     umn:{ thoracic:'Normal', pelvic:'UMN' },
-    explanation:'Normal thoracic limbs + UMN pelvic limb signs = classic "back-end" spinal cord localization between the two intumescences.',
+    explanation:'Normal thoracic limbs + UMN pelvic limb signs = classic thoracolumbar localization between the two intumescences. This is the most common spinal cord localization in small animal practice.',
     review: {
-      localization: 'This is the most common spinal cord localization in small animal practice. The lesion lies in the thoracolumbar region (T3–L3), between the two intumescences. The thoracic limbs are completely spared because their motor neurons are rostral to the lesion. The pelvic limbs receive UMN signs because the descending tracts are disrupted before reaching the lumbar intumescence.',
-      umnLmn: 'Thoracic limbs are neurologically normal — all motor neuron pathways to them are intact. Pelvic limbs show UMN signs: normal-to-increased patellar reflexes, spastic tone, and intact muscle mass (initially). The pelvic limb LMN cell bodies at L4–S3 are healthy; they are simply not receiving instructions from the brain.',
+      localization: `This is the most common spinal cord localization in small animal practice and should be immediately recognizable. The lesion lies in the thoracolumbar region (T3–L3), between the two intumescences.
+
+The thoracic limbs are completely spared because their entire motor pathway (from brain to brachial plexus) is rostral to the lesion. The pelvic limbs show UMN signs because the descending motor tracts are interrupted before reaching the lumbar intumescence — but the pelvic limb motor neurons themselves (L4–S3) remain intact and uninjured.
+
+Localizing pain on spinal palpation (a focal "pain point") is a critical clinical finding that helps narrow the MRI window and is characteristic of extradural compressive disease (IVDD, fracture).`,
+      umnLmn: `Thoracic limbs are neurologically normal — all motor neuron pathways to them are rostral to the lesion and completely intact. Thoracic limb gait, reflexes, postural reactions, and muscle mass should all be normal.
+
+Pelvic limbs show UMN signs:
+• Normal-to-increased patellar reflex (the femoral nerve arc at L4–L6 is intact)
+• Normal-to-increased withdrawal reflex
+• Spastic muscle tone
+• Delayed or absent postural reactions (conscious proprioception)
+• Preserved muscle mass in the acute phase
+
+The Schiff-Sherrington phenomenon — rigid extensor tone of the thoracic limbs with flaccid pelvic limbs — can occur with severe T3–L3 lesions and indicates a severe, often complete, myelopathy. It does NOT mean the thoracic limbs are affected; it is a release phenomenon from loss of inhibitory interneurons.`,
       differentials: [
-        { name:'Thoracolumbar IVDD (Hansen Type I)', reason:'The single most common cause in chondrodystrophic breeds (Dachshund, Beagle, Corgi). Acute onset of paraparesis or paraplegia, often with severe pain at the lesion site.' },
-        { name:'Fibrocartilaginous Embolism (FCE)', reason:'Acute, non-progressive, often asymmetric paraparesis following exercise or minor trauma. Typically non-painful after the initial episode. Common in large breeds.' },
-        { name:'Spinal Cord Neoplasia (meningioma, lymphoma)', reason:'Slower, progressive UMN paraparesis. Age and breed influence likelihood. MRI typically reveals an intra- or extradural mass.' },
+        {
+          name: 'Thoracolumbar IVDD — Hansen Type I',
+          reason: 'The single most common cause in chondrodystrophic breeds (Dachshund, Beagle, French Bulldog, Corgi). Acute onset of paraparesis or paraplegia, often with severe focal spinal pain at the thoracolumbar junction (T12–L2 most common). Radiographs may show disc calcification or collapse.'
+        },
+        {
+          name: 'Fibrocartilaginous Embolism (FCE)',
+          reason: 'Acute, non-progressive, typically non-painful (after the initial event) paraparesis, often following exercise or minor trauma. Frequently asymmetric. Most common in large breeds (Labrador Retriever, Golden Retriever, German Shepherd) and some small breeds (Miniature Schnauzer). MRI shows intramedullary T2 hyperintensity without compressive lesion.'
+        },
+        {
+          name: 'Spinal Cord Neoplasia (meningioma, lymphoma, nephroblastoma)',
+          reason: 'Slower, progressive UMN paraparesis. Meningiomas are most common in older large-breed dogs and cats. Lymphoma should be considered in young dogs and cats. Nephroblastoma occurs at T10–L2 in young dogs. MRI with contrast is essential for characterization.'
+        },
       ],
-      pearl: '"T3–L3 is the easy one." Normal front end + UMN back end, every time. The challenge is differentiating acute compressive (IVDD) from vascular (FCE): FCE is non-painful after the first hour and non-progressive; IVDD is painful and often progressive.',
-      workup: 'MRI of the thoracolumbar spine is the diagnostic of choice. Radiographs may reveal disc calcification or collapse. Pain localization on spinal palpation helps narrow the MRI window.',
+      pearl: `The T3–L3 pattern is the "easy" localization — normal front end, UMN back end, every time.
+
+The real clinical challenge is differentiating the two most common causes:
+• IVDD: acute onset, focal spinal pain, often progressive, chondrodystrophic breed
+• FCE: peracute onset, non-painful after initial event, non-progressive after 24 hours, large breed, often asymmetric
+
+Deep pain perception (DPP) testing is the most important prognostic indicator in T3–L3 lesions. Absent DPP = severe myelopathy, guarded-to-poor prognosis for surgical recovery.`,
+      workup: `MRI of the thoracolumbar spine is the diagnostic gold standard and should include T2, T1, and post-contrast sequences. Survey thoracolumbar radiographs may reveal disc calcification or collapse and help prioritize the MRI region. Careful pain localization on spinal palpation (applying firm pressure to each spinous process) helps narrow the MRI window. CSF analysis from the lumbar cistern to differentiate inflammatory from compressive disease.`,
     }
   },
   {
@@ -104,53 +162,142 @@ const PATTERNS = [
     limbs:['both_back'], postural:['back_only'],
     reflexThoracic:'normal_increased', reflexPelvic:'decreased',
     umn:{ thoracic:'Normal', pelvic:'LMN' },
-    explanation:'Normal thoracic limbs + LMN pelvic limb signs = lesion in the lumbar intumescence (L4–S3). Consider sciatic/femoral nerve root involvement.',
+    explanation:'Normal thoracic limbs + LMN pelvic limb signs = lesion in the lumbar intumescence (L4–S3). The motor neuron cell bodies for the sciatic and femoral nerves are directly damaged, producing flaccid pelvic limb weakness.',
     review: {
-      localization: 'The lesion is within the lumbar intumescence (L4–S3) — the origin of the sciatic and femoral nerves. Unlike T3–L3 lesions, this directly damages the motor neuron cell bodies for the pelvic limbs, producing flaccid weakness rather than spastic weakness.',
-      umnLmn: 'Pelvic limbs show LMN signs: decreased or absent patellar and withdrawal reflexes, flaccid muscle tone, and rapid neurogenic muscle atrophy. The thoracic limbs are completely normal. The key distinguishing feature from T3–L3 is that decreased pelvic reflexes tell you the lesion is AT the intumescence — the motor neurons themselves are damaged.',
+      localization: `The lesion is within the lumbar intumescence (L4–S3) — the origin of the femoral nerve (L4–L6) and the sciatic nerve (L6–S2), as well as the pudendal nerve (S1–S3) supplying the bladder, anal sphincter, and perineum.
+
+Unlike T3–L3 lesions that produce UMN pelvic limb signs, L4–S3 lesions directly damage the motor neuron cell bodies, producing flaccid weakness. This distinction — UMN vs. LMN pelvic limb signs — is the single most important differentiator between T3–L3 and L4–S3 localization.
+
+Always assess bladder and anal sphincter function in L4–S3 lesions. A large, easily expressed bladder with poor anal tone indicates sacral involvement (S1–S3) and significantly affects prognosis and management.`,
+      umnLmn: `Pelvic limbs show LMN signs because the motor neurons themselves are damaged:
+• Decreased or absent patellar reflex (femoral nerve, L4–L6)
+• Decreased or absent withdrawal reflex (sciatic nerve, L6–S2)
+• Flaccid muscle tone
+• Rapid neurogenic muscle atrophy (visible within 7–10 days)
+• Absent postural reactions
+
+The thoracic limbs are completely normal — their entire motor pathway is rostral to the lesion.
+
+Sacral involvement (S1–S3) produces additional signs:
+• Decreased or absent perineal reflex
+• Reduced or absent anal tone
+• Urinary and/or fecal incontinence (LMN bladder: large, easily expressed, dribbling)
+• Tail weakness or paralysis`,
       differentials: [
-        { name:'Lumbosacral IVDD / Degenerative Lumbosacral Stenosis', reason:'Common in large breeds, especially German Shepherds. Compression of the cauda equina causes LMN pelvic limb signs, tail weakness, and often urinary/fecal incontinence.' },
-        { name:'Discospondylitis (L-S region)', reason:'Bacterial infection of the disc and adjacent vertebrae. Presents with severe lumbar pain, fever, and progressive LMN signs. Blood cultures and urine culture are key diagnostics.' },
-        { name:'Lumbosacral Neoplasia', reason:'Primary or metastatic tumors affecting L4–S3 nerve roots. Progressive, often asymmetric LMN signs with or without pain.' },
+        {
+          name: 'Lumbosacral IVDD / Degenerative Lumbosacral Stenosis (DLSS)',
+          reason: 'Most common in large breeds, especially German Shepherds and Labrador Retrievers. Compression of the cauda equina at L7–S1 causes LMN pelvic limb signs, tail weakness, perineal hypalgesia, and often urinary/fecal incontinence. Pain on lumbosacral palpation and hyperextension is characteristic.'
+        },
+        {
+          name: 'Discospondylitis (lumbosacral region)',
+          reason: 'Bacterial (Staphylococcus, Brucella) or fungal infection of the disc and adjacent vertebral endplates. Presents with severe lumbosacral pain, fever, progressive LMN signs, and systemic illness. Blood cultures, urine culture, and Brucella serology are essential diagnostics.'
+        },
+        {
+          name: 'Lumbosacral Neoplasia (nerve sheath tumor, lymphoma, bone tumor)',
+          reason: 'Primary or metastatic tumors involving L4–S3 nerve roots or vertebral bodies. Progressive, often asymmetric LMN pelvic limb signs with variable pain. Survey radiographs may show vertebral lysis. MRI with contrast is essential for soft tissue characterization.'
+        },
       ],
-      pearl: 'Always assess the perineum in L4–S3 lesions. Decreased perineal reflex, loss of anal tone, and urinary/fecal incontinence indicate sacral (S1–S3) involvement — this changes both prognosis and surgical planning.',
-      workup: 'MRI of the lumbosacral junction is essential. CT myelography is an alternative. EMG/nerve conduction studies can help differentiate intumescence disease from peripheral neuropathy.',
+      pearl: `Always assess the FULL sacral reflex arc in L4–S3 lesions — do not stop at the patellar and withdrawal reflexes.
+
+Test the perineal reflex (touch perineum → anal wink), assess anal sphincter tone on rectal palpation, and evaluate bladder size and expression. Sacral (S1–S3) involvement changes both the prognosis and the management plan significantly.
+
+Also remember: CT alone (without myelography) is often preferred over CT myelography at the lumbosacral junction because the subarachnoid space is naturally narrow there, making myelographic contrast difficult to interpret. MRI remains the gold standard.`,
+      workup: `MRI of the lumbosacral junction (L4–S3) is the gold standard. CT of the lumbosacral junction is a practical alternative and provides excellent bony detail for surgical planning. CT myelography is less useful here due to the narrow subarachnoid space at L7–S1. EMG/NCS can identify denervation in specific muscle groups and help differentiate intumescence disease from peripheral neuropathy. Urinalysis and urine culture (for discospondylitis), blood cultures, and Brucella serology as indicated.`,
     }
   },
   {
-    id:'P_mono_TL', title:'C6–T2 (Unilateral) or Nerve Root', color:'purple', spineY:22,
+    id:'P_mono_TL', title:'C6–T2 (Unilateral) or Brachial Plexus', color:'purple', spineY:22,
     limbs:['rf','lf'], postural:['one_limb'],
     reflexThoracic:'decreased', reflexPelvic:'normal_increased',
     umn:{ thoracic:'LMN (unilateral)', pelvic:'UMN' },
-    explanation:'Monoparesis of a single thoracic limb with decreased reflexes suggests ipsilateral C6–T2 involvement or a specific nerve root lesion.',
+    explanation:'Monoparesis of a single thoracic limb with LMN signs (decreased reflexes, muscle atrophy) points to a unilateral C6–T2 lesion or brachial plexus nerve root disease. Careful localization of the affected nerve root(s) is essential.',
     review: {
-      localization: 'Single thoracic limb involvement with LMN signs points to either a unilateral lesion affecting one side of the cervical intumescence (C6–T2) or, more commonly, disease of the brachial plexus nerve roots themselves. Because only one limb is affected, the lesion is lateralized — affecting only the ipsilateral nerve root(s) or one side of the spinal cord.',
-      umnLmn: 'The affected thoracic limb shows LMN signs: decreased reflexes (biceps, triceps), flaccid tone, and progressive neurogenic atrophy. The pelvic limbs show UMN signs if the ipsilateral descending tracts are also affected, which is typical of a lateralized C6–T2 spinal cord lesion. If pelvic limbs are normal, a peripheral nerve root or brachial plexus lesion is more likely.',
+      localization: `Single thoracic limb LMN signs localize to either:
+1. A unilateral (lateralized) lesion affecting one side of the cervical intumescence (C6–T2)
+2. Disease of the brachial plexus nerve roots directly (C6–T2 roots)
+3. A peripheral nerve of the thoracic limb (radial, median, ulnar)
+
+The "nerve root signature" is a classic clinical pattern: a dog presents with non-weight-bearing lameness of one thoracic limb, a negative orthopaedic workup, and slowly progressive LMN signs. This pattern should raise immediate suspicion for nerve sheath tumor.
+
+If the ipsilateral pelvic limb also shows UMN signs, the lesion is likely within the spinal cord (lateralized C6–T2 myelopathy). If the pelvic limbs are completely normal, a peripheral nerve or brachial plexus lesion is more likely.`,
+      umnLmn: `The affected thoracic limb shows LMN signs due to damage of the motor neuron cell bodies or their axons:
+• Decreased or absent specific reflexes (biceps C6–C8; triceps C7–T1; withdrawal)
+• Flaccid muscle tone
+• Progressive neurogenic muscle atrophy (specific to the muscles supplied by the affected root)
+• The pattern of atrophy and sensory loss maps to the specific nerve root: C6 → cranial forearm; C7–C8 → caudal forearm; T1 → medial forearm
+
+Horner syndrome (ptosis, miosis, enophthalmos, prolapsed nictitans) may accompany C8–T1–T2 lesions due to disruption of the sympathetic pathway that travels with these roots. Its presence is an important localizing sign.`,
       differentials: [
-        { name:'Nerve Sheath Tumor (Schwannoma / Neurofibrosarcoma)', reason:'The most feared cause of thoracic limb monoparesis. Insidious onset, often painful, progressive. The "nerve root signature" — unilateral thoracic limb lameness that worsens over weeks — is classic.' },
-        { name:'Brachial Plexus Avulsion (traumatic)', reason:'Following road traffic accident or fall. Sudden onset of complete or partial monoplegia, often with Horner syndrome (ptosis, miosis, enophthalmos) and loss of panniculus reflex.' },
-        { name:'Lateralized IVDD (C6–C7 or C7–T1)', reason:'Disc material extruding laterally compresses one side of the cord and/or nerve roots, causing ipsilateral LMN thoracic limb signs with contralateral or bilateral UMN pelvic signs.' },
+        {
+          name: 'Nerve Sheath Tumor (Schwannoma / Malignant Peripheral Nerve Sheath Tumor)',
+          reason: 'The most important diagnosis to rule out in a dog with progressive thoracic limb monoparesis and a negative orthopaedic workup. Insidious onset, typically painful, slowly progressive over weeks to months. The "nerve root signature" — unilateral thoracic limb lameness without orthopaedic cause — is the classic presentation. Chest radiographs should be taken to evaluate for pulmonary metastasis.'
+        },
+        {
+          name: 'Brachial Plexus Avulsion (traumatic)',
+          reason: 'Sudden onset following road traffic accident, fall, or forceful traction on the limb. Results in complete or partial monoplegia of the affected thoracic limb. Root avulsion (C6–T2) produces ipsilateral Horner syndrome and loss of the ipsilateral panniculus (cutaneous trunci) reflex. Preganglionic avulsions are not surgically repairable; prognosis is poor.'
+        },
+        {
+          name: 'Lateralized IVDD (C6–C7 or C7–T1)',
+          reason: 'Lateral disc extrusion compresses one side of the cord and/or specific nerve roots, causing ipsilateral LMN thoracic limb signs. May present acutely with severe limb pain and monoparesis. MRI reveals the lateralized disc material.'
+        },
       ],
-      pearl: 'The "nerve root signature" is a classic board question: a dog presents with non-weight-bearing lameness of one thoracic limb, negative orthopaedic workup, and slowly progressive LMN signs. Think nerve sheath tumor until proven otherwise.',
-      workup: 'MRI of the cervical spine and brachial plexus is essential. Chest radiographs should be taken to evaluate for pulmonary metastasis if neoplasia is suspected. EMG helps map the denervation pattern and localize the lesion.',
+      pearl: `The "nerve root signature" is one of the most important clinical patterns in veterinary neurology:
+
+A dog presents with non-weight-bearing lameness of ONE thoracic limb → complete orthopaedic workup is negative → signs slowly progress over weeks → LMN signs develop.
+
+This is nerve sheath tumor until proven otherwise. Do not allow repeated "recheck in 4 weeks" without imaging. Early MRI of the cervical spine and brachial plexus — including the axilla — is essential. Always include thoracic radiographs to check for pulmonary metastasis.`,
+      workup: `MRI of the cervical spine and brachial plexus (including the axillary region) is essential — nerve sheath tumors can extend well beyond the spinal canal. Thoracic radiographs (3 views) to evaluate for pulmonary metastasis. EMG/NCS to map denervation pattern, confirm LMN involvement, and help localize the lesion to a specific nerve root or peripheral nerve. Ultrasound-guided FNA or surgical biopsy for tissue diagnosis.`,
     }
   },
   {
-    id:'P_mono_PL', title:'L4–S3 (Unilateral) or Nerve Root', color:'teal', spineY:70,
+    id:'P_mono_PL', title:'L4–S3 (Unilateral) or Peripheral Nerve', color:'teal', spineY:70,
     limbs:['rb','lb'], postural:['one_limb'],
     reflexThoracic:'normal_increased', reflexPelvic:'decreased',
     umn:{ thoracic:'Normal', pelvic:'LMN (unilateral)' },
-    explanation:'Monoparesis of a single pelvic limb with decreased reflexes suggests ipsilateral L4–S3 involvement or a peripheral nerve lesion (sciatic, femoral).',
+    explanation:'Monoparesis of a single pelvic limb with decreased reflexes localizes to the ipsilateral lumbar intumescence (L4–S3) or, more commonly, to a specific peripheral nerve — most often the sciatic or femoral nerve.',
     review: {
-      localization: 'Single pelvic limb LMN signs localize to either the ipsilateral lumbar intumescence (L4–S3), or more specifically to the sciatic or femoral nerve. The distribution of weakness and the reflexes affected help distinguish: absent patellar reflex → femoral nerve (L4–L6); absent withdrawal reflex → sciatic nerve (L6–S2).',
-      umnLmn: 'The affected pelvic limb shows LMN signs: flaccid tone, decreased reflexes, and progressive neurogenic muscle atrophy. The pattern of atrophy is diagnostically useful — quadriceps (femoral) vs. caudal thigh muscles (sciatic). The thoracic limbs are completely normal. The contralateral pelvic limb is also normal, confirming the unilateral nature.',
+      localization: `Single pelvic limb LMN signs localize to:
+1. A unilateral (lateralized) lesion of the lumbar intumescence (L4–S3)
+2. The sciatic nerve (L6–S2) — most commonly injured nerve in the pelvic limb
+3. The femoral nerve (L4–L6) — produces characteristic inability to extend the stifle
+4. Individual branches (peroneal, tibial) for more distal, focal deficits
+
+Careful reflex testing differentiates these:
+• Absent patellar reflex → femoral nerve (L4–L6)
+• Absent withdrawal reflex → sciatic nerve (L6–S2)
+• Both absent → lumbar intumescence lesion or combined nerve injury
+
+The thoracic limbs are completely normal. The contralateral pelvic limb is also normal, confirming the unilateral, focal nature of the lesion.`,
+      umnLmn: `The affected pelvic limb shows LMN signs:
+• Specific reflex loss based on nerve involved (patellar → femoral; withdrawal → sciatic)
+• Flaccid muscle tone
+• Progressive neurogenic muscle atrophy in the distribution of the affected nerve
+  - Femoral: rapid quadriceps atrophy, medial thigh; unable to bear weight (cannot extend stifle)
+  - Sciatic: caudal thigh muscles, cranial and caudal crural muscles; "dropped hock" appearance, knuckling
+
+Sensory testing (response to pinprick in specific dermatomes) helps confirm the nerve involved and assess the severity of sensory loss.`,
       differentials: [
-        { name:'Sciatic Nerve Injury (iatrogenic or traumatic)', reason:'Injection injury (intramuscular injections in the caudal thigh), pelvic fracture, or sacroiliac luxation can damage the sciatic nerve. Classic presentation: "dropped hock," knuckling, and absent withdrawal reflex.' },
-        { name:'Femoral Nerve Injury', reason:'Retractor injury during TPLO or femoral fracture repair. Presents as inability to bear weight due to inability to extend the stifle, with absent patellar reflex and rapid quadriceps atrophy.' },
-        { name:'Lateralized L4–S3 IVDD or Neoplasia', reason:'Disc extrusion or a tumor affecting one side of the lumbar intumescence. Can mimic peripheral nerve disease but MRI will reveal the spinal lesion.' },
+        {
+          name: 'Sciatic Nerve Injury (iatrogenic or traumatic)',
+          reason: 'The sciatic nerve is vulnerable to injection injury (intramuscular injections in the caudal thigh — always inject in the cranial thigh), pelvic fracture, sacroiliac luxation, and femoral head/neck surgery. Classic presentation: "dropped hock" (plantigrade stance), knuckling of the paw, absent withdrawal reflex, and caudal thigh atrophy.'
+        },
+        {
+          name: 'Femoral Nerve Injury',
+          reason: 'Less common but functionally devastating. May follow retractor injury during TPLO or femoral fracture repair, or result from retroperitoneal hemorrhage. Presents as inability to bear weight (cannot extend the stifle), absent patellar reflex, and rapid quadriceps atrophy. The animal appears to have a "floppy" stifle.'
+        },
+        {
+          name: 'Lateralized L4–S3 IVDD or Lumbosacral Neoplasia',
+          reason: 'A disc extrusion or tumor affecting one side of the lumbar intumescence produces unilateral LMN pelvic limb signs that mimic peripheral nerve disease. MRI will reveal the spinal lesion. EMG can help distinguish intumescence disease from peripheral nerve injury by mapping the denervation pattern.'
+        },
       ],
-      pearl: 'Assess BOTH the patellar reflex AND the withdrawal reflex in every pelvic limb monoparesis case. Absent patellar = femoral nerve. Absent withdrawal = sciatic nerve. Both absent = lumbar intumescence or combined lesion.',
-      workup: 'Careful neurological mapping of the sensory deficit (dermatomal vs. peripheral nerve pattern) is essential. MRI of the lumbar spine and plexus, plus EMG/NCS to identify the exact nerve and level of injury.',
+      pearl: `Always test BOTH the patellar reflex AND the withdrawal reflex in every pelvic limb monoparesis case — they assess different nerve roots and peripheral nerves.
+
+• Absent patellar reflex = femoral nerve (L4–L6) — the animal cannot bear weight; stifle collapses
+• Absent withdrawal reflex = sciatic nerve (L6–S2) — the animal can bear weight but knuckles and has a "dropped hock"
+• Both absent = lumbar intumescence (L4–S3) or combined lesion
+
+Iatrogenic sciatic nerve injury from IM injections is entirely preventable — always inject in the cranial (epaxial) muscle mass of the thigh, never the caudal thigh.`,
+      workup: `Careful neurological mapping of the sensory deficit (dermatomal vs. peripheral nerve distribution) is essential before imaging. MRI of the lumbar spine and lumbosacral plexus for suspected spinal/intumescence lesions. EMG and NCS to confirm LMN denervation, identify the specific nerve involved, assess severity, and provide prognostic information (presence of motor unit action potentials = some axon continuity). Ultrasound of the nerve and surrounding structures for peripheral nerve lesions. Pelvic radiographs or CT if trauma is suspected.`,
     }
   },
   {
@@ -158,17 +305,60 @@ const PATTERNS = [
     limbs:['all_four'], postural:['all_four'],
     reflexThoracic:'decreased', reflexPelvic:'decreased',
     umn:{ thoracic:'LMN', pelvic:'LMN' },
-    explanation:'Decreased reflexes in ALL four limbs is not a spinal cord pattern — think polyneuropathy, neuromuscular junction disease (myasthenia gravis, botulism), or myopathy.',
+    explanation:'Decreased reflexes in ALL four limbs is not a spinal cord pattern. Think polyneuropathy, neuromuscular junction disease (myasthenia gravis, botulism, tick paralysis), or myopathy. A systematic approach to the neuromuscular examination is essential.',
     review: {
-      localization: 'This is NOT a spinal cord pattern. Decreased reflexes throughout all four limbs means the LMN system itself is diffusely affected — either the peripheral nerves (polyneuropathy), the neuromuscular junction (junctionopathy), or the muscles themselves (myopathy). There is no single spinal cord lesion that produces LMN signs in all four limbs simultaneously.',
-      umnLmn: 'All four limbs show LMN signs: flaccid weakness, decreased-to-absent reflexes, and variable muscle atrophy. The pattern of involvement and additional clinical signs help distinguish the three categories: polyneuropathy often shows distal-onset weakness and sensory deficits; junctionopathies (like myasthenia gravis) show exercise-induced weakness that improves with rest; myopathies show proximal muscle weakness, pain on muscle palpation, and elevated CK.',
+      localization: `This is NOT a spinal cord localization. No single spinal cord lesion produces LMN signs in all four limbs simultaneously — to do so would require damage to both intumescences at the same time, which would be an extraordinary coincidence.
+
+Diffuse LMN signs indicate disease at one of three levels of the motor unit:
+1. Peripheral nerve (polyneuropathy) — axon or myelin disease
+2. Neuromuscular junction (junctionopathy) — synaptic transmission failure
+3. Muscle (myopathy) — primary muscle disease
+
+Additional clinical signs help distinguish these categories: cranial nerve involvement, exercise intolerance, megaesophagus, respiratory compromise, and the pattern of muscle involvement (distal vs. proximal, symmetric vs. asymmetric).`,
+      umnLmn: `All four limbs show LMN signs, but the character varies by disease category:
+
+Polyneuropathy:
+• Flaccid weakness, typically distal > proximal (ascending)
+• Decreased or absent reflexes
+• Muscle atrophy (neurogenic, progressive)
+• Sensory deficits may be present (ataxia, self-mutilation)
+• Examples: diabetic neuropathy, hypothyroid neuropathy, inherited neuropathies
+
+Neuromuscular Junction Disease (Junctionopathy):
+• Exercise-induced weakness that IMPROVES with rest — key distinguishing feature
+• Reflexes may be normal or decreased
+• No muscle atrophy (muscle itself is intact)
+• Cranial nerve signs common (regurgitation from megaesophagus, facial weakness)
+• Examples: myasthenia gravis, botulism, tick paralysis, aminoglycoside toxicity
+
+Myopathy:
+• Proximal > distal weakness
+• Pain on muscle palpation
+• Markedly elevated serum CK
+• Reflexes may be normal or decreased
+• Examples: immune-mediated polymyositis, Labrador muscular dystrophy, metabolic myopathies`,
       differentials: [
-        { name:'Myasthenia Gravis (acquired or congenital)', reason:'Autoantibodies against acetylcholine receptors at the neuromuscular junction. Episodic weakness worsening with exercise, megaesophagus, and aspiration pneumonia are classic. Diagnosis: acetylcholine receptor antibody titer.' },
-        { name:'Acute Polyradiculoneuritis (Coonhound Paralysis)', reason:'Immune-mediated attack on peripheral nerve roots, often following raccoon exposure. Rapid ascending flaccid paralysis, hyporeflexia, normal mentation. Usually self-limiting over weeks to months.' },
-        { name:'Botulism (Clostridium botulinum toxin)', reason:'Toxin blocks acetylcholine release at the neuromuscular junction. Rapid onset of symmetric flaccid tetraplegia, cranial nerve involvement, and constipation. History of carrion or raw meat ingestion.' },
+        {
+          name: 'Myasthenia Gravis (acquired or congenital)',
+          reason: 'Autoantibodies against nicotinic acetylcholine receptors (nAChRs) at the neuromuscular junction prevent acetylcholine binding. Classic signs: episodic weakness dramatically worsening with exercise and improving with rest, megaesophagus (in ~90% of acquired cases), and aspiration pneumonia. Diagnosis: serum acetylcholine receptor antibody titer (gold standard). Congenital form is antibody-negative.'
+        },
+        {
+          name: 'Acute Polyradiculoneuritis (Coonhound Paralysis / Idiopathic Polyradiculoneuritis)',
+          reason: 'Immune-mediated attack on the myelin and axons of peripheral nerve roots, often following raccoon exposure (dogs) or idiopathic (cats and dogs). Rapid ascending flaccid paralysis over 24–72 hours, hyporeflexia to areflexia, intact pain sensation, and normal mentation. Respiratory paralysis is possible. Usually self-limiting over 2–6 months with excellent nursing care.'
+        },
+        {
+          name: 'Botulism (Clostridium botulinum neurotoxin)',
+          reason: 'Neurotoxin irreversibly binds presynaptic terminals and blocks acetylcholine vesicle release. Rapid onset of symmetric flaccid tetraplegia with cranial nerve involvement (dysphagia, dysphonia, facial weakness), constipation, and urinary retention. EMG hallmark: decreased amplitude compound muscle action potentials (CMAPs) with normal nerve conduction velocity (NCV) — distinguishing it from polyneuropathy. History of carrion ingestion or raw meat.'
+        },
       ],
-      pearl: 'When all four limbs have LMN signs, think outside the spine. Ask about exercise tolerance (MG), recent dietary history (botulism), and check CK and acetylcholine receptor antibodies early. Thoracic radiographs for megaesophagus should be standard in any generalized LMN case.',
-      workup: 'CBC, chemistry, CK, thyroid (T4), acetylcholine receptor antibody titer, EMG/NCS, and muscle/nerve biopsy. Edrophonium (Tensilon) test for suspected MG. CSF analysis if polyradiculoneuritis is high on the differential.',
+      pearl: `When all four limbs have LMN signs, think outside the spine. Use this three-question screen:
+
+1. Does weakness improve dramatically with rest? → Suspect neuromuscular junction disease (MG, botulism, tick paralysis)
+2. Is the CK markedly elevated? → Suspect myopathy (polymyositis, muscular dystrophy)
+3. Is there a distal-to-proximal ascending pattern with sensory deficits? → Suspect polyneuropathy
+
+Always take thoracic radiographs in any generalized LMN case — megaesophagus strongly supports myasthenia gravis or another junctionopathy and carries a serious risk of aspiration pneumonia that must be addressed immediately.`,
+      workup: `Minimum database: CBC, serum chemistry panel, serum CK (markedly elevated in myopathy), urinalysis. Thyroid panel (T4, free T4, TSH) — hypothyroidism is a reversible cause of polyneuropathy. Acetylcholine receptor antibody titer (for acquired MG). Thoracic radiographs (megaesophagus, aspiration pneumonia, thymoma). EMG and NCS: decreased amplitude CMAPs with normal NCV = junctionopathy (botulism, MG); decreased NCV = polyneuropathy; normal EMG/NCS = myopathy. Muscle and/or nerve biopsy for definitive diagnosis of myopathy or polyneuropathy. Edrophonium (Tensilon) test for suspected MG if titer pending. Tick search (full body) for suspected tick paralysis.`,
     }
   },
 ];
@@ -202,21 +392,19 @@ function canSubmit(sel) {
     sel.reflexThoracic && sel.reflexPelvic;
 }
 
-// Simulated typewriter effect for the case review
-function useTypewriter(text, speed = 12) {
+function useTypewriter(text, speed=10) {
   const [displayed, setDisplayed] = useState('');
   const [done, setDone] = useState(false);
   useEffect(() => {
     if (!text) { setDisplayed(''); setDone(false); return; }
-    setDisplayed('');
-    setDone(false);
+    setDisplayed(''); setDone(false);
     let i = 0;
-    const interval = setInterval(() => {
+    const iv = setInterval(() => {
       i++;
       setDisplayed(text.slice(0, i));
-      if (i >= text.length) { clearInterval(interval); setDone(true); }
+      if (i >= text.length) { clearInterval(iv); setDone(true); }
     }, speed);
-    return () => clearInterval(interval);
+    return () => clearInterval(iv);
   }, [text]);
   return { displayed, done };
 }
@@ -231,14 +419,14 @@ function SpineDiagram({ spineY }) {
     { label:'L4–S3', y:68, hex:'#06b6d4' },
   ];
   return React.createElement('svg', { viewBox:'0 0 64 100', className:'w-14 h-24 shrink-0' },
-    React.createElement('rect', { x:28, y:4, width:8, height:92, rx:4, fill:'#e2e8f0' }),
+    React.createElement('rect',{x:28,y:4,width:8,height:92,rx:4,fill:'#e2e8f0'}),
     segs.map(s => {
-      const active = spineY !== null && Math.abs(spineY - s.y) < 18;
-      return React.createElement('g', { key: s.label },
-        React.createElement('rect', { x:24, y:s.y, width:16, height:14, rx:3,
-          fill: active ? s.hex : '#cbd5e1', opacity: active ? 1 : 0.45 }),
-        React.createElement('text', { x:44, y:s.y+10, fontSize:6,
-          fill: active ? s.hex : '#94a3b8', fontWeight: active ? 'bold' : 'normal' }, s.label)
+      const active = spineY!==null && Math.abs(spineY-s.y)<18;
+      return React.createElement('g',{key:s.label},
+        React.createElement('rect',{x:24,y:s.y,width:16,height:14,rx:3,
+          fill:active?s.hex:'#cbd5e1',opacity:active?1:0.45}),
+        React.createElement('text',{x:44,y:s.y+10,fontSize:6,
+          fill:active?s.hex:'#94a3b8',fontWeight:active?'bold':'normal'},s.label)
       );
     })
   );
@@ -247,48 +435,44 @@ function SpineDiagram({ spineY }) {
 // ── PROGRESS RING ─────────────────────────────────────────────────────────────
 
 function Ring({ p }) {
-  const r = 18, c = 2 * Math.PI * r;
-  return React.createElement('svg', { width:48, height:48, viewBox:'0 0 48 48' },
-    React.createElement('circle', { cx:24, cy:24, r, fill:'none', stroke:'#e2e8f0', strokeWidth:4 }),
-    React.createElement('circle', { cx:24, cy:24, r, fill:'none',
-      stroke: p===100 ? '#22c55e' : '#6366f1', strokeWidth:4,
-      strokeDasharray:`${(p/100)*c} ${c}`, strokeLinecap:'round',
-      transform:'rotate(-90 24 24)',
-      style:{ transition:'stroke-dasharray 0.4s ease' } }),
-    React.createElement('text', { x:24, y:28, textAnchor:'middle', fontSize:11,
-      fontWeight:'bold', fill: p===100 ? '#22c55e' : '#6366f1' }, p+'%')
+  const r=18, c=2*Math.PI*r;
+  return React.createElement('svg',{width:48,height:48,viewBox:'0 0 48 48'},
+    React.createElement('circle',{cx:24,cy:24,r,fill:'none',stroke:'#e2e8f0',strokeWidth:4}),
+    React.createElement('circle',{cx:24,cy:24,r,fill:'none',
+      stroke:p===100?'#22c55e':'#6366f1',strokeWidth:4,
+      strokeDasharray:`${(p/100)*c} ${c}`,strokeLinecap:'round',
+      transform:'rotate(-90 24 24)',style:{transition:'stroke-dasharray 0.4s ease'}}),
+    React.createElement('text',{x:24,y:28,textAnchor:'middle',fontSize:11,
+      fontWeight:'bold',fill:p===100?'#22c55e':'#6366f1'},p+'%')
   );
 }
 
-// ── CASE REVIEW PANEL ─────────────────────────────────────────────────────────
+// ── CASE REVIEW ───────────────────────────────────────────────────────────────
 
 function CaseReview({ match, sel }) {
   const [revealed, setRevealed] = useState(false);
-  const [activeTab, setActiveTab] = useState('localization');
+  const [tab, setTab] = useState('localization');
   const r = match.review;
 
-  const posturalText = sel.postural === 'one_limb'
+  const posturalText = sel.postural==='one_limb'
     ? `Delayed only in the ${LIMB_LABELS[sel.posturalLimb]}`
-    : sel.postural.replace(/_/g, ' ');
+    : sel.postural.replace(/_/g,' ');
 
   const tabs = [
     { id:'localization', label:'📍 Localization' },
-    { id:'umnlmn',       label:'⚡ UMN vs LMN' },
+    { id:'umnlmn',       label:'⚡ UMN vs LMN'  },
     { id:'ddx',          label:'🔬 Differentials' },
-    { id:'workup',       label:'🩻 Workup' },
-    { id:'pearl',        label:'💎 Pearl' },
+    { id:'workup',       label:'🩻 Workup'        },
+    { id:'pearl',        label:'💎 Pearl'         },
   ];
 
-  // Typewriter for the localization tab content
   const { displayed: typedLoc, done: locDone } = useTypewriter(
-    revealed && activeTab === 'localization' ? r.localization : '',
-    10
+    revealed && tab==='localization' ? r.localization : '', 8
   );
 
   if (!revealed) {
     return (
-      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200
-        rounded-2xl overflow-hidden fade-in">
+      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl overflow-hidden fade-in">
         <div className="p-6 text-center">
           <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
             style={{background:'linear-gradient(135deg,#7c3aed,#4f46e5)'}}>
@@ -298,23 +482,17 @@ function CaseReview({ match, sel }) {
             </svg>
           </div>
           <h4 className="font-bold text-purple-900 text-lg mb-2">Professor's Case Review</h4>
-          <p className="text-sm text-purple-700 mb-1">
-            Based on your findings, this case localizes to:
-          </p>
+          <p className="text-sm text-purple-700 mb-1">Based on your findings, this case localizes to:</p>
           <p className="text-xl font-extrabold text-indigo-800 mb-4">{match.title}</p>
-          <div className="bg-white/70 rounded-xl p-3 mb-5 text-xs text-slate-600 space-y-1 text-left">
-            <div className="font-bold text-slate-500 uppercase tracking-wide mb-2 text-center">
-              Case Summary
-            </div>
+          <div className="bg-white/70 rounded-xl p-3 mb-5 text-xs text-slate-600 space-y-1.5 text-left">
+            <div className="font-bold text-slate-500 uppercase tracking-wide mb-2 text-center text-xs">Case Summary</div>
             <div>🦴 <strong>Limbs:</strong> {sel.limbs.map(l=>LIMB_LABELS[l]).join(', ')}</div>
-            <div>🐾 <strong>Postural:</strong> {posturalText}</div>
-            <div>⬆️ <strong>Thoracic reflexes:</strong> {sel.reflexThoracic==='normal_increased'?'Normal to Increased':'Decreased'}</div>
-            <div>⬆️ <strong>Pelvic reflexes:</strong> {sel.reflexPelvic==='normal_increased'?'Normal to Increased':'Decreased'}</div>
+            <div>🐾 <strong>Postural reactions:</strong> {posturalText}</div>
+            <div>⚡ <strong>Thoracic reflexes:</strong> {sel.reflexThoracic==='normal_increased'?'Normal to Increased (UMN)':'Decreased (LMN)'}</div>
+            <div>⚡ <strong>Pelvic reflexes:</strong> {sel.reflexPelvic==='normal_increased'?'Normal to Increased (UMN)':'Decreased (LMN)'}</div>
           </div>
-          <button
-            onClick={()=>setRevealed(true)}
-            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all
-              hover:shadow-lg hover:-translate-y-0.5"
+          <button onClick={()=>setRevealed(true)}
+            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all hover:shadow-lg hover:-translate-y-0.5"
             style={{background:'linear-gradient(135deg,#7c3aed,#4f46e5)'}}>
             ✨ Open Full Case Review
           </button>
@@ -325,87 +503,66 @@ function CaseReview({ match, sel }) {
 
   return (
     <div className="bg-white border border-purple-200 rounded-2xl overflow-hidden fade-in shadow-sm">
-      {/* Header */}
       <div className="px-5 py-4 flex items-center justify-between"
-        style={{background:'linear-gradient(135deg,#7c3aed22,#4f46e522)'}}>
-        <div className="flex items-center gap-2">
+        style={{background:'linear-gradient(135deg,#7c3aed18,#4f46e518)'}}>
+        <div className="flex items-center gap-2 flex-wrap">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
             fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
           <span className="text-sm font-bold text-purple-900">Professor's Case Review</span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
-            {match.title}
-          </span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">{match.title}</span>
         </div>
-        <button onClick={()=>{setRevealed(false);setActiveTab('localization');}}
-          className="text-xs text-purple-400 hover:text-purple-700 transition-colors">
-          ✕ Close
-        </button>
+        <button onClick={()=>{setRevealed(false);setTab('localization');}}
+          className="text-xs text-purple-400 hover:text-purple-700 transition-colors shrink-0">✕ Close</button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex overflow-x-auto border-b border-slate-100 px-2 gap-1 pt-2 pb-0">
-        {tabs.map(tab => (
-          <button key={tab.id}
-            onClick={()=>setActiveTab(tab.id)}
+      <div className="flex overflow-x-auto border-b border-slate-100 px-2 gap-1 pt-2">
+        {tabs.map(t => (
+          <button key={t.id} onClick={()=>setTab(t.id)}
             className={`px-3 py-2 text-xs font-semibold rounded-t-lg whitespace-nowrap transition-all border-b-2
-              ${activeTab===tab.id
-                ? 'border-purple-500 text-purple-700 bg-purple-50'
-                : 'border-transparent text-slate-400 hover:text-slate-600'
-              }`}>
-            {tab.label}
+              ${tab===t.id
+                ?'border-purple-500 text-purple-700 bg-purple-50'
+                :'border-transparent text-slate-400 hover:text-slate-600'}`}>
+            {t.label}
           </button>
         ))}
       </div>
 
-      {/* Tab content */}
-      <div className="p-5 text-sm text-slate-700 leading-relaxed min-h-40">
+      <div className="p-5 text-sm text-slate-700 leading-relaxed" style={{minHeight:'200px'}}>
 
-        {activeTab==='localization' && (
-          <div className="fade-fast">
-            <p className={locDone ? '' : 'typing-cursor'}>
-              {typedLoc || r.localization}
-            </p>
+        {tab==='localization' && (
+          <div className="fade-fast whitespace-pre-line">
+            <p className={locDone?'':'typing-cursor'}>{typedLoc||r.localization}</p>
           </div>
         )}
 
-        {activeTab==='umnlmn' && (
-          <div className="fade-fast space-y-3">
-            <div className="flex gap-3 mb-4">
-              {[
-                { seg:'Thoracic', val:match.umn.thoracic },
-                { seg:'Pelvic',   val:match.umn.pelvic },
-              ].map(({seg,val}) => (
+        {tab==='umnlmn' && (
+          <div className="fade-fast space-y-4">
+            <div className="flex gap-3 mb-2">
+              {[{seg:'Thoracic',val:match.umn.thoracic},{seg:'Pelvic',val:match.umn.pelvic}].map(({seg,val})=>(
                 <div key={seg} className="flex-1 rounded-xl p-3 text-center border"
                   style={{
-                    background: val.includes('LMN') ? '#fff1f2' : val==='Normal' ? '#f8fafc' : '#f0fdf4',
-                    borderColor: val.includes('LMN') ? '#fecdd3' : val==='Normal' ? '#e2e8f0' : '#bbf7d0',
+                    background:val.includes('LMN')?'#fff1f2':val==='Normal'?'#f8fafc':'#f0fdf4',
+                    borderColor:val.includes('LMN')?'#fecdd3':val==='Normal'?'#e2e8f0':'#bbf7d0'
                   }}>
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{seg}</div>
-                  <div className={`font-extrabold text-lg ${
-                    val.includes('LMN') ? 'text-rose-500' :
-                    val==='Normal' ? 'text-slate-500' : 'text-emerald-600'
-                  }`}>{val}</div>
+                  <div className={`font-extrabold text-lg ${val.includes('LMN')?'text-rose-500':val==='Normal'?'text-slate-500':'text-emerald-600'}`}>{val}</div>
                 </div>
               ))}
             </div>
-            <p>{r.umnLmn}</p>
+            <div className="whitespace-pre-line text-sm">{r.umnLmn}</div>
           </div>
         )}
 
-        {activeTab==='ddx' && (
+        {tab==='ddx' && (
           <div className="fade-fast space-y-3">
-            <p className="text-xs text-slate-400 uppercase font-bold tracking-wide mb-3">
-              Top Differential Diagnoses
-            </p>
-            {r.differentials.map((d,i) => (
+            <p className="text-xs text-slate-400 uppercase font-bold tracking-wide mb-3">Top Differential Diagnoses</p>
+            {r.differentials.map((d,i)=>(
               <div key={i} className="rounded-xl p-4 border border-slate-100 bg-slate-50">
-                <div className="flex items-start gap-2 mb-1">
+                <div className="flex items-start gap-2 mb-1.5">
                   <span className="text-xs font-bold rounded-full px-2 py-0.5 shrink-0"
-                    style={{background:'#ede9fe', color:'#6d28d9'}}>
-                    #{i+1}
-                  </span>
+                    style={{background:'#ede9fe',color:'#6d28d9'}}>#{i+1}</span>
                   <span className="font-semibold text-slate-800 text-sm">{d.name}</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed pl-8">{d.reason}</p>
@@ -414,25 +571,25 @@ function CaseReview({ match, sel }) {
           </div>
         )}
 
-        {activeTab==='workup' && (
+        {tab==='workup' && (
           <div className="fade-fast">
-            <div className="flex items-start gap-3 p-4 rounded-xl mb-3"
-              style={{background:'#eff6ff', border:'1px solid #bfdbfe'}}>
+            <div className="flex items-start gap-3 p-4 rounded-xl"
+              style={{background:'#eff6ff',border:'1px solid #bfdbfe'}}>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round"
-                strokeLinejoin="round" className="shrink-0 mt-0.5">
+                fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                className="shrink-0 mt-0.5">
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                 <path d="M3 9h18M9 21V9"/>
               </svg>
-              <p className="text-sm text-blue-800">{r.workup}</p>
+              <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-line">{r.workup}</p>
             </div>
           </div>
         )}
 
-        {activeTab==='pearl' && (
+        {tab==='pearl' && (
           <div className="fade-fast">
-            <div className="rounded-xl p-5"
-              style={{background:'linear-gradient(135deg,#fefce8,#fef3c7)', border:'1px solid #fde68a'}}>
+            <div className="rounded-xl p-5 whitespace-pre-line"
+              style={{background:'linear-gradient(135deg,#fefce8,#fef3c7)',border:'1px solid #fde68a'}}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">💎</span>
                 <span className="font-bold text-amber-900 text-sm uppercase tracking-wide">Clinical Pearl</span>
@@ -450,7 +607,7 @@ function CaseReview({ match, sel }) {
 // ── APP ───────────────────────────────────────────────────────────────────────
 
 function App() {
-  const empty = { limbs:[], postural:'', posturalLimb:'', reflexThoracic:'', reflexPelvic:'' };
+  const empty = {limbs:[],postural:'',posturalLimb:'',reflexThoracic:'',reflexPelvic:''};
   const [sel, setSel]           = useState(empty);
   const [result, setResult]     = useState(null);
   const [showReview, setShowReview] = useState(false);
@@ -459,61 +616,44 @@ function App() {
   const progress = pct(sel);
   const ready    = canSubmit(sel);
 
-  const toggleLimb = (l) => setSel(p => ({
-    ...p, limbs: p.limbs.includes(l) ? p.limbs.filter(x=>x!==l) : [...p.limbs, l]
+  const toggleLimb = l => setSel(p=>({
+    ...p, limbs:p.limbs.includes(l)?p.limbs.filter(x=>x!==l):[...p.limbs,l]
   }));
 
   const reset = () => { setSel(empty); setResult(null); setShowReview(false); };
 
   const suggest = () => {
     const scored = PATTERNS.map(pat => {
-      let s = 0;
-      if (pat.limbs.some(l => sel.limbs.includes(l))) s += 2;
-      if (sel.limbs.length === 4 && pat.limbs.includes('all_four')) s += 3;
-      if (pat.postural.includes(sel.postural)) s += 3;
-      if (pat.reflexThoracic === sel.reflexThoracic) s += 2;
-      if (pat.reflexPelvic === sel.reflexPelvic) s += 2;
-      return { ...pat, score: s };
+      let s=0;
+      if (pat.limbs.some(l=>sel.limbs.includes(l))) s+=2;
+      if (sel.limbs.length===4 && pat.limbs.includes('all_four')) s+=3;
+      if (pat.postural.includes(sel.postural)) s+=3;
+      if (pat.reflexThoracic===sel.reflexThoracic) s+=2;
+      if (pat.reflexPelvic===sel.reflexPelvic) s+=2;
+      return {...pat,score:s};
     });
-    const best = Math.max(...scored.map(s => s.score));
-    setResult(scored.filter(s => s.score === best && s.score > 2));
+    const best = Math.max(...scored.map(s=>s.score));
+    setResult(scored.filter(s=>s.score===best && s.score>2));
     setShowReview(false);
   };
 
-  useEffect(() => {
-    if (result && resultRef.current && window.innerWidth < 1024) {
-      resultRef.current.scrollIntoView({ behavior:'smooth', block:'start' });
-    }
-  }, [result]);
+  useEffect(()=>{
+    if (result && resultRef.current && window.innerWidth<1024)
+      resultRef.current.scrollIntoView({behavior:'smooth',block:'start'});
+  },[result]);
 
-  const umnColor = (v) =>
-    v.includes('LMN') ? 'text-rose-500' : v==='Normal' ? 'text-slate-500' : 'text-emerald-600';
+  const umnColor = v =>
+    v.includes('LMN')?'text-rose-500':v==='Normal'?'text-slate-500':'text-emerald-600';
 
   const limbHint = () => {
-    const n = sel.limbs.length;
+    const n=sel.limbs.length;
     if (n===4) return 'All four limbs → tetraparesis / tetraplegia';
-    if (n===2 && sel.limbs.every(l=>l.endsWith('b'))) return 'Both pelvic limbs → paraparesis';
-    if (n===2 && sel.limbs.every(l=>l.endsWith('f'))) return 'Both thoracic limbs → cervical intumescence?';
+    if (n===2&&sel.limbs.every(l=>l.endsWith('b'))) return 'Both pelvic limbs → paraparesis';
+    if (n===2&&sel.limbs.every(l=>l.endsWith('f'))) return 'Both thoracic limbs → cervical intumescence?';
     if (n===1) return 'One limb → monoparesis';
     if (n===2) return 'Hemiparesis pattern';
     return null;
   };
-
-  // Icons as inline SVG functions
-  const Icon = ({ d, size=20, stroke='currentColor', sw=2, extra='' }) =>
-    React.createElement('svg', {
-      xmlns:'http://www.w3.org/2000/svg', width:size, height:size,
-      viewBox:'0 0 24 24', fill:'none', stroke, strokeWidth:sw,
-      strokeLinecap:'round', strokeLinejoin:'round', className:extra
-    }, ...d.map((cmd,i) => {
-      if (cmd.type==='polyline') return React.createElement('polyline',{key:i,points:cmd.p});
-      if (cmd.type==='circle')   return React.createElement('circle',{key:i,...cmd});
-      if (cmd.type==='line')     return React.createElement('line',{key:i,...cmd});
-      if (cmd.type==='path')     return React.createElement('path',{key:i,d:cmd.p});
-      if (cmd.type==='rect')     return React.createElement('rect',{key:i,...cmd});
-      if (cmd.type==='polygon')  return React.createElement('polygon',{key:i,points:cmd.p});
-      return null;
-    }));
 
   return (
     <div className="min-h-screen p-4 md:p-8">
@@ -534,7 +674,7 @@ function App() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Ring p={progress} />
+            <Ring p={progress}/>
             <button onClick={reset}
               className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-500
                 hover:text-indigo-600 hover:bg-white rounded-xl border border-transparent
@@ -550,30 +690,27 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* ══ INPUT PANEL ══ */}
+          {/* INPUT PANEL */}
           <div className="space-y-5">
 
             {/* Step 1 */}
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
-                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center
-                  justify-center text-xs font-bold shrink-0">1</span>
+                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
                 Which limbs show weakness or ataxia?
               </h2>
               <div className="grid grid-cols-2 gap-3">
-                {Object.entries(LIMB_LABELS).map(([k,label]) => {
-                  const on = sel.limbs.includes(k);
+                {Object.entries(LIMB_LABELS).map(([k,label])=>{
+                  const on=sel.limbs.includes(k);
                   return (
                     <button key={k} onClick={()=>toggleLimb(k)}
                       className={`relative p-3 rounded-xl border-2 text-left transition-all duration-150
-                        ${on
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-800 shadow-sm'
-                          : 'border-slate-100 bg-slate-50 text-slate-500 hover:border-indigo-200 hover:bg-indigo-50/30'
-                        }`}>
-                      {on && (
+                        ${on?'border-indigo-500 bg-indigo-50 text-indigo-800 shadow-sm'
+                          :'border-slate-100 bg-slate-50 text-slate-500 hover:border-indigo-200 hover:bg-indigo-50/30'}`}>
+                      {on&&(
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                          fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round"
-                          strokeLinejoin="round" className="absolute top-2 right-2">
+                          fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                          className="absolute top-2 right-2">
                           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                           <polyline points="22 4 12 14.01 9 11.01"/>
                         </svg>
@@ -586,47 +723,43 @@ function App() {
                   );
                 })}
               </div>
-              {limbHint() && <p className="mt-3 text-xs text-indigo-500 font-medium fade-in">{limbHint()}</p>}
+              {limbHint()&&<p className="mt-3 text-xs text-indigo-500 font-medium fade-in">{limbHint()}</p>}
             </section>
 
             {/* Step 2 */}
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-base font-semibold mb-1 flex items-center gap-2">
-                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center
-                  justify-center text-xs font-bold shrink-0">2</span>
+                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
                 Postural Reactions
               </h2>
               <p className="text-xs text-slate-400 mb-4 ml-8">Conscious proprioception / paw placement test</p>
               <div className="grid grid-cols-1 gap-2">
                 {[
-                  { val:'all_four',   label:'Delayed in all four limbs' },
-                  { val:'front_only', label:'Delayed in front (thoracic) limbs only' },
-                  { val:'back_only',  label:'Delayed in back (pelvic) limbs only' },
-                  { val:'one_limb',   label:'Delayed in one limb only (monoparesis)' },
-                  { val:'normal',     label:'Normal in all limbs' },
-                ].map(({val,label}) => (
-                  <button key={val}
-                    onClick={()=>setSel({...sel, postural:val, posturalLimb:''})}
+                  {val:'all_four',  label:'Delayed in all four limbs'},
+                  {val:'front_only',label:'Delayed in front (thoracic) limbs only'},
+                  {val:'back_only', label:'Delayed in back (pelvic) limbs only'},
+                  {val:'one_limb',  label:'Delayed in one limb only (monoparesis)'},
+                  {val:'normal',    label:'Normal in all limbs'},
+                ].map(({val,label})=>(
+                  <button key={val} onClick={()=>setSel({...sel,postural:val,posturalLimb:''})}
                     className={`text-left px-4 py-2.5 rounded-xl border text-sm font-medium transition-all
                       ${sel.postural===val
-                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                        : 'bg-slate-50 text-slate-600 border-slate-100 hover:border-indigo-200'
-                      }`}>
+                        ?'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                        :'bg-slate-50 text-slate-600 border-slate-100 hover:border-indigo-200'}`}>
                     {label}
                   </button>
                 ))}
               </div>
-              {sel.postural==='one_limb' && (
+              {sel.postural==='one_limb'&&(
                 <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 fade-in">
                   <p className="text-xs font-bold text-slate-500 uppercase mb-2">Which limb?</p>
                   <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(LIMB_LABELS).map(([k,label]) => (
-                      <button key={k} onClick={()=>setSel({...sel, posturalLimb:k})}
+                    {Object.entries(LIMB_LABELS).map(([k,label])=>(
+                      <button key={k} onClick={()=>setSel({...sel,posturalLimb:k})}
                         className={`p-2 text-xs rounded-lg border text-center font-medium transition-all
                           ${sel.posturalLimb===k
-                            ? 'bg-indigo-600 text-white border-indigo-600'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'
-                          }`}>
+                            ?'bg-indigo-600 text-white border-indigo-600'
+                            :'bg-white text-slate-600 border-slate-200 hover:border-indigo-300'}`}>
                         {label}
                       </button>
                     ))}
@@ -638,28 +771,24 @@ function App() {
             {/* Step 3 */}
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-base font-semibold mb-1 flex items-center gap-2">
-                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center
-                  justify-center text-xs font-bold shrink-0">3</span>
+                <span className="bg-indigo-100 text-indigo-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
                 Segmental Reflexes
               </h2>
               <p className="text-xs text-slate-400 mb-4 ml-8">Patellar (pelvic) · Biceps / Triceps (thoracic)</p>
               {[
-                { field:'reflexThoracic', label:'Thoracic Limb Reflexes' },
-                { field:'reflexPelvic',   label:'Pelvic Limb Reflexes' },
-              ].map(({field,label}) => (
+                {field:'reflexThoracic',label:'Thoracic Limb Reflexes'},
+                {field:'reflexPelvic',  label:'Pelvic Limb Reflexes'},
+              ].map(({field,label})=>(
                 <div key={field} className="mb-4 last:mb-0">
                   <p className="text-sm font-medium text-slate-600 mb-2">{label}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { val:'decreased',       lbl:'↓ Decreased (LMN)', active:'bg-rose-500 text-white border-rose-500' },
-                      { val:'normal_increased', lbl:'↑ Normal / Increased (UMN)', active:'bg-emerald-500 text-white border-emerald-500' },
-                    ].map(({val,lbl,active}) => (
-                      <button key={val} onClick={()=>setSel({...sel, [field]:val})}
+                      {val:'decreased',       lbl:'↓ Decreased (LMN)',active:'bg-rose-500 text-white border-rose-500'},
+                      {val:'normal_increased',lbl:'↑ Normal / Increased (UMN)',active:'bg-emerald-500 text-white border-emerald-500'},
+                    ].map(({val,lbl,active})=>(
+                      <button key={val} onClick={()=>setSel({...sel,[field]:val})}
                         className={`py-2.5 px-3 rounded-xl border text-sm font-medium text-center transition-all
-                          ${sel[field]===val
-                            ? active+' shadow-sm'
-                            : 'bg-slate-50 text-slate-600 border-slate-100 hover:border-slate-300'
-                          }`}>
+                          ${sel[field]===val?active+' shadow-sm':'bg-slate-50 text-slate-600 border-slate-100 hover:border-slate-300'}`}>
                         {lbl}
                       </button>
                     ))}
@@ -670,25 +799,21 @@ function App() {
 
             {/* Submit */}
             <button onClick={suggest} disabled={!ready}
-              className={`w-full py-4 rounded-2xl font-bold text-base transition-all flex items-center
-                justify-center gap-2
+              className={`w-full py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2
                 ${ready
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}>
+                  ?'bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5'
+                  :'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              {ready ? 'Suggest Neurolocalization' : `Complete all fields to continue (${progress}%)`}
+              {ready?'Suggest Neurolocalization':`Complete all fields to continue (${progress}%)`}
             </button>
           </div>
 
-          {/* ══ RESULTS PANEL ══ */}
+          {/* RESULTS PANEL */}
           <div className="space-y-5" ref={resultRef}>
-
-            <div className={`bg-white rounded-2xl shadow-sm border border-slate-100
-              transition-opacity duration-300 ${!result ? 'opacity-40' : 'opacity-100'}`}>
+            <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 transition-opacity duration-300 ${!result?'opacity-40':'opacity-100'}`}>
 
               <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                 <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -700,10 +825,9 @@ function App() {
                   </svg>
                   Analysis Results
                 </h2>
-                {result && result.length > 0 && !showReview && (
+                {result&&result.length>0&&!showReview&&(
                   <button onClick={()=>setShowReview(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white
-                      rounded-full shadow transition-all hover:shadow-purple-300 hover:-translate-y-0.5"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white rounded-full shadow transition-all hover:shadow-purple-300 hover:-translate-y-0.5"
                     style={{background:'linear-gradient(135deg,#7c3aed,#4f46e5)'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                       fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -715,25 +839,23 @@ function App() {
               </div>
 
               <div className="p-6">
-                {!result && (
+                {!result&&(
                   <div className="h-64 flex flex-col items-center justify-center text-center gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24"
                       fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                     </svg>
                     <p className="text-slate-400 text-sm max-w-xs">
-                      Fill in the exam findings on the left, then press{' '}
-                      <strong>Suggest Neurolocalization</strong>.
+                      Fill in the exam findings on the left, then press <strong>Suggest Neurolocalization</strong>.
                     </p>
                   </div>
                 )}
 
-                {result && result.length===0 && (
-                  <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200
-                    rounded-xl text-amber-800 text-sm">
+                {result&&result.length===0&&(
+                  <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      strokeLinejoin="round" className="shrink-0 mt-0.5">
+                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                      className="shrink-0 mt-0.5">
                       <circle cx="12" cy="12" r="10"/>
                       <line x1="12" y1="8" x2="12" y2="12"/>
                       <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -742,35 +864,25 @@ function App() {
                   </div>
                 )}
 
-                {result && result.length > 0 && (
+                {result&&result.length>0&&(
                   <div className="space-y-5 fade-in">
+                    {showReview&&<CaseReview match={result[0]} sel={sel} key={result[0].id}/>}
 
-                    {/* Case Review */}
-                    {showReview && (
-                      <CaseReview match={result[0]} sel={sel} key={result[0].id} />
-                    )}
-
-                    {/* Pattern cards */}
-                    {result.map((m,idx) => {
-                      const c = COLOR[m.color] || COLOR.indigo;
+                    {result.map((m,idx)=>{
+                      const c=COLOR[m.color]||COLOR.indigo;
                       return (
                         <div key={m.id} className={`border-l-4 pl-4 py-1 ${c.border}`}>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5
-                              rounded-full ${c.badge}`}>
-                              {idx===0 ? '✓ Primary Localization' : 'Differential'}
+                            <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${c.badge}`}>
+                              {idx===0?'✓ Primary Localization':'Differential'}
                             </span>
                           </div>
                           <div className="flex items-start gap-4">
                             <div className="flex-1">
                               <h3 className="text-xl font-extrabold text-slate-900 mb-3">{m.title}</h3>
                               <div className="flex gap-2 mb-3">
-                                {[
-                                  { seg:'Thoracic', val:m.umn.thoracic },
-                                  { seg:'Pelvic',   val:m.umn.pelvic },
-                                ].map(({seg,val}) => (
-                                  <div key={seg} className="bg-slate-50 border border-slate-100
-                                    rounded-lg px-3 py-1.5 text-xs text-center">
+                                {[{seg:'Thoracic',val:m.umn.thoracic},{seg:'Pelvic',val:m.umn.pelvic}].map(({seg,val})=>(
+                                  <div key={seg} className="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-xs text-center">
                                     <div className="font-bold text-slate-400 uppercase mb-0.5">{seg}</div>
                                     <div className={`font-bold ${umnColor(val)}`}>{val}</div>
                                   </div>
@@ -778,47 +890,37 @@ function App() {
                               </div>
                               <ul className="space-y-1.5 text-sm text-slate-700 mb-3">
                                 <li className="flex items-start gap-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                    viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2"
-                                    strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
-                                    <polyline points="9 18 15 12 9 6"/>
-                                  </svg>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                    className="mt-0.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
                                   Limbs: <strong className="ml-1">{sel.limbs.map(l=>LIMB_LABELS[l]).join(', ')}</strong>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                    viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2"
-                                    strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
-                                    <polyline points="9 18 15 12 9 6"/>
-                                  </svg>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                    className="mt-0.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
                                   Postural: <strong className="ml-1">
                                     {sel.postural==='one_limb'
-                                      ? `Delayed in ${LIMB_LABELS[sel.posturalLimb]} only`
-                                      : sel.postural.replace(/_/g,' ')}
+                                      ?`Delayed in ${LIMB_LABELS[sel.posturalLimb]} only`
+                                      :sel.postural.replace(/_/g,' ')}
                                   </strong>
                                 </li>
                                 <li className="flex items-start gap-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                    viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2"
-                                    strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
-                                    <polyline points="9 18 15 12 9 6"/>
-                                  </svg>
-                                  Thoracic reflexes:{' '}
-                                  <strong className={`ml-1 ${sel.reflexThoracic==='decreased'?'text-rose-500':'text-emerald-600'}`}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                    className="mt-0.5 shrink-0"><polyline points="9 18 15 12 9 6"/></svg>
+                                  Thoracic reflexes: <strong className={`ml-1 ${sel.reflexThoracic==='decreased'?'text-rose-500':'text-emerald-600'}`}>
                                     {sel.reflexThoracic==='decreased'?'↓ Decreased':'↑ Normal/Increased'}
-                                  </strong>
-                                  {' '}· Pelvic:{' '}
-                                  <strong className={sel.reflexPelvic==='decreased'?'text-rose-500':'text-emerald-600'}>
+                                  </strong> · Pelvic: <strong className={sel.reflexPelvic==='decreased'?'text-rose-500':'text-emerald-600'}>
                                     {sel.reflexPelvic==='decreased'?'↓ Decreased':'↑ Normal/Increased'}
                                   </strong>
                                 </li>
                               </ul>
-                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3
-                                text-sm text-slate-600 italic leading-relaxed">
+                              <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm text-slate-600 italic leading-relaxed">
                                 {m.explanation}
                               </div>
                             </div>
-                            <SpineDiagram spineY={m.spineY} />
+                            <SpineDiagram spineY={m.spineY}/>
                           </div>
                         </div>
                       );
@@ -850,16 +952,16 @@ function App() {
                 </p>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   {[
-                    { seg:'C1–C5',  t:'UMN',    p:'UMN',    note:'Tetraparesis' },
-                    { seg:'C6–T2',  t:'LMN',    p:'UMN',    note:'Cervical intumescence' },
-                    { seg:'T3–L3',  t:'Normal', p:'UMN',    note:'Paraparesis' },
-                    { seg:'L4–S3',  t:'Normal', p:'LMN',    note:'Lumbar intumescence' },
-                  ].map(({seg,t,p,note}) => (
+                    {seg:'C1–C5', t:'UMN',   p:'UMN',   note:'Tetraparesis'},
+                    {seg:'C6–T2', t:'LMN',   p:'UMN',   note:'Cervical intumescence'},
+                    {seg:'T3–L3', t:'Normal',p:'UMN',   note:'Paraparesis'},
+                    {seg:'L4–S3', t:'Normal',p:'LMN',   note:'Lumbar intumescence'},
+                  ].map(({seg,t,p,note})=>(
                     <div key={seg} className="rounded-xl p-3" style={{background:'rgba(255,255,255,0.08)'}}>
                       <div className="font-bold text-white mb-1">{seg}</div>
                       <div className="leading-relaxed" style={{color:'#a5b4fc'}}>
-                        TL: <span style={{color: t==='LMN'?'#fca5a5':t==='UMN'?'#6ee7b7':'white'}}>{t}</span><br/>
-                        PL: <span style={{color: p==='LMN'?'#fca5a5':p==='UMN'?'#6ee7b7':'white'}}>{p}</span><br/>
+                        TL: <span style={{color:t==='LMN'?'#fca5a5':t==='UMN'?'#6ee7b7':'white'}}>{t}</span><br/>
+                        PL: <span style={{color:p==='LMN'?'#fca5a5':p==='UMN'?'#6ee7b7':'white'}}>{p}</span><br/>
                         <span style={{color:'#818cf8',fontStyle:'italic'}}>{note}</span>
                       </div>
                     </div>
@@ -883,10 +985,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(
 </script>
 </body>
 </html>
-
-							<script>
-                            	
-							</script>
-                        </body>
-                        </html>
-                    
